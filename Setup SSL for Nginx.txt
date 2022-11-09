@@ -1,0 +1,53 @@
+System admins team of xFusionCorp Industries needs to deploy a new application on App Server 1 in Stratos Datacenter. They have some pre-requites to get ready that server for application deployment. As per requirements shared below prepare the server:
+
+
+1. Install and configure nginx on App Server 1.
+
+2. On App Server 1 there is a self signed SSL certificate and key present at location /tmp/nautilus.crt and /tmp/nautilus.key. Move them to some appropriate location and deploy the same in Nginx.
+
+3. Create an index.html file with content Welcome! under Nginx document root.
+
+4. For final testing try to access the App Server 1 link (either hostname or IP) from jump host using curl command. For example curl -Ik https://<app-server-ip>/
+
+
+Solution:
+
+1. Install and configure nginx on App Server 1
+
+a. ssh to aapserver1 # ssh tony@172.16.238.10
+b. sudo yum install epel-release;sudo yum install -y nginx 
+c. sudo systemctl start nginx(starts nginx)
+d. sudo systemctl enable nginx(enables nginx on next reboot)
+e. sudo systemctl status nginx(gets status of nginx)
+
+Configure firewalld to Allow Nginx Traffic:
+
+# firewall-cmd --zone=public --permanent --add-service=http
+# firewall-cmd --zone=public --permanent --add-service=https
+# firewall-cmd --reload
+
+2. On App Server 1 there is a self signed SSL certificate and key present at location /tmp/nautilus.crt and /tmp/nautilus.key. Move them to some appropriate location and deploy the same in Nginx.
+
+
+#. sudo mkdir -p /etc/ssl/cert
+#. mv /tmp/nautilus.crt /etc/ssl/
+#. mv /tmp/nautilus.key /etc/ssl/
+# sudo vi /var/www/html/index.html
+Welcome!
+
+#. sudo vi /etc/nginx/nginx.conf
+#. server_name <IPaddress of Appserver>
+#. listen 443 ssl default_server;
+#. root /var/www/html;
+#. ssl_certificate /etc/ssl/nautilus.crt
+#. ssl_certificate /etc/ssl/nautilus.key
+#. sudo nginx -t(test the Nginx configuration for correct syntax:)
+
+3. Create an index.html file with content Welcome! under Nginx document root.
+
+# sudo vi /var/www/html/index.html
+Welcome!
+
+4. For final testing try to access the App Server 1 link (either hostname or IP) from jump host using curl command. For example curl -Ik https://<app-server-ip>/
+
+# curl -Ik https://172.16.238.10/

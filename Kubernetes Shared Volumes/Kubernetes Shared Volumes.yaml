@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Pod
+metadata:
+	name: volume-share-devops
+  labels: 
+    name: myapp
+
+spec:
+  volumes:
+    - name: volume-share
+      emptyDir: {}
+  containers:
+    - name: volume-container-devops-1
+      image: fedora:latest
+      command: 
+        - sleep
+        - "36000"
+      volumeMounts:
+        - name: volume-share
+          mountPath: /tmp/blog
+    - name: volume-container-devops-2
+      image: fedora:latest
+      command:
+        - sleep
+        - "36000" 
+      volumeMounts:
+        - name: volume-share
+          mountPath: /tmp/apps
+
+kubectl exec -it volume-share-devops -c volume-container-devops-1 -- /bin/bash
+
+echo "Some text as per your task ..!!" > /tmp/blog/blog.txt
+
+to verify: 
+
+  kubectl exec volume-container-devops -c volume-container-devops-2 -- ls /tmp/apps/blog.txt

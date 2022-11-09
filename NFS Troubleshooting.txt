@@ -1,0 +1,78 @@
+Nautilus production support team was trying to fix some issues with their storage server. Storage server has a shared directory /webdata which is mounted on all app servers at location /var/www/html so that whatever data they store on storage server under /webdata can be shared among all app servers. Now somehow NFS server is broken and having some issues.
+
+
+Identify the root cause of issue and fix the same to make sure sharing works fine among all app servers and storage server.
+
+First SSH into storage server ststor01
+
+ssh natasha@172.16.238.15
+
+App servers 
+
+ssh tony@172.16.238.10
+ssh steve@172.16.238.11
+ssh banner@172.16.238.12
+
+To check if the Files are exported from server the command is 
+
+# exportfs -v 
+
+To check if NFS is installed 
+
+rpm -qa | grep nfs-utils (to validate nfs-utils is installed)
+
+Installing NFS Server and NFS Client
+
+# yum install nfs-utils nfs-utils-lib
+# yum install portmap (not required with NFSv4)
+
+Now start the services on both server and clients 
+
+# sudo systemctl start rpcbind nfs-server
+
+For old servers 
+
+# /etc/init.d/portmap start
+# /etc/init.d/nfs start
+# chkconfig --level 35 portmap on
+# chkconfig --level 35 nfs on
+
+Configure Export directory
+
+# vi /etc/exports
+
+/appdata <Ipaddress of the client>(rw,sync,no_root_squash)
+
+For multiple clinets it should be 
+
+/appdata <Ipaddress of the client>(rw,sync,no_root_squash)
+/appdata <Ipaddress of the client>(rw,sync,no_root_squash)
+
+Mount Shared Directories on NFS Client
+
+
+
+shows available mounts from CLIENT
+
+#showmount -e <serverIp>
+
+Mount Shared NFS Directory
+
+mount -t nfs 172.16.238.15:/webdata /var/www/html
+
+Hint: use 
+# mount -t nfs -v 172.16.238.15:/webdata /var/www/html
+for verbose or detailed for troubleshooting 
+
+
+To verify run 
+
+# mount | grep nfs
+
+To persist the changes across boot use
+
+# vi /etc/fstab
+Add the following new line as shown below:
+
+ServerIP:/nfsshare /mnt  nfs defaults 0 0
+

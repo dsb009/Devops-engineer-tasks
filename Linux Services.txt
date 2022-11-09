@@ -1,0 +1,34 @@
+As per details shared by the development team, the new application release has some dependencies on the back end. There are some packages/services that need to be installed on all app servers under Stratos Datacenter. As per requirements please perform the following steps:
+
+
+a. Install httpd package on all the application servers.
+
+b. Once installed, make sure it is enabled to start during boot.
+
+
+How to do it using ansible: 
+
+ansible.cgf:
+[defaults]
+inventory = ./inventory
+private_key_file = ~/.ssh/id_rsa
+host_key_checking = false
+
+myhosts:
+[appservers]
+stapp01 ansible_ssh_host=172.16.238.10 ansible_connection=ssh ansible_ssh_user=tony ansible_ssh_pass=Ir0nM@n ansible_become_pass=Ir0nM@n
+stapp02 ansible_ssh_host=172.16.238.11 ansible_connection=ssh ansible_ssh_user=steve ansible_ssh_pass=Am3ric@ ansible_become_pass=Am3ric@
+stapp03 ansible_ssh_host=172.16.238.12 ansible_connection=ssh ansible_ssh_user=banner ansible_ssh_pass=BigGr33n ansible_become_pass=BigGr33n
+
+
+hosts: appservers
+become: true
+tasks:
+  name: install httpd
+yum:
+name: httpd
+state: present
+name: status
+systemd:
+name: httpd
+enabled: yes

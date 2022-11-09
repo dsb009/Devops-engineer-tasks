@@ -1,0 +1,47 @@
+The Nautilus application development team has shared that they are planning to deploy one newly developed application on Nautilus infra in Stratos DC. The application uses PostgreSQL database, so as a pre-requisite we need to set up PostgreSQL database server as per requirements shared below:
+
+
+a. Install and configure PostgreSQL database on Nautilus database server.
+
+b. Create a database user kodekloud_top and set its password to BruCStnMT5.
+
+c. Create a database kodekloud_db9 and grant full permissions to user kodekloud_top on this database.
+
+d. Make appropriate settings to allow all local clients (local socket connections) to connect to the kodekloud_db9 database through kodekloud_top user using md5 method (Please do not try to encrypt password with md5sum).
+
+e. At the end its good to test the db connection using these new credentials from root user or server's sudo user.
+
+
+
+Steps:
+
+yum install postgresql-server postgresql-contrib
+postgresql-setup initdb
+systemctl enable postgresql && systemctl start postgresql
+systemctl status postgresql
+
+echo -n ‘BruCStnMT5’ | md5sum
+184b4fb9d4689f4acc81eaafe9d9cf2ad
+
+su - postgres
+sudo -u postgres psql postgres
+psql
+psql=# CREATE USER kodekloud_top WITH ENCRYPTED PASSWORD 'BruCStnMT5';
+psql=# CREATE DATABASE kodekloud_db9 OWNER kodekloud_top;
+
+psql=# GRANT ALL PRIVILEGES ON DATABASE kodekloud_db9 TO kodekloud_top;
+
+vi /var/lib/pgsql/data/pg_hba.conf
+
+local all all md5
+host kodekloud_db9 kodekloud_top 127.0.0.1/32 md5
+host kodekloud_db9 kodekloud_top ::1/128 md5
+
+vi /var/lib/pgsql/data/postgresql.conf
+listen_addresses= ‘*’
+
+systemctl restart postgresql.service
+systemctl status postgresql.service
+
+#Authentication
+psql -U kodekloud_top -d kodekloud_db9 -h 127.0.0.1 -W

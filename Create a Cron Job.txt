@@ -1,0 +1,62 @@
+Nautilus system admins team has prepared some scripts to automate few day to day tasks. They want them to be deployed on all app servers in Stratos DC and need to set some scheduled run for all of them. Before that they need to test similar functionality with a sample cron job. So perform the steps given below:
+
+
+a. Install cronie package on all Nautilus app servers and start crond service.
+
+b. Add a cron */5 * * * * echo hello > /tmp/cron_text for root user.
+
+
+
+To Install: 
+
+Sudo yum install -u cronie
+
+To enable: 
+
+sudo systemctl start crond
+sudo systemctl enable crond
+
+To check if it is running:
+
+ps -aux | grep cron
+
+or
+
+ps ax | grep cron
+
+To create a cron job(crontab) as root:
+
+sudo crontab -e
+
+To create a cron job as normal user: 
+
+crontab -e
+
+To edit crontab:
+
+SHELL=/bin/bash ( Mandatory if you intend to run any shell script )
+MAILTO=root@example.com
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+
+# For details see man 4 crontabs
+
+# Example of job definition:
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+# |  |  |  |  |
+# *  *  *  *  * user-name  command to be executed
+
+To check if Cron is running as root:
+
+sudo crontab -u root -l
+
+The cron service checks for files in the /var/spool/cron and /etc/cron.d directories and the /etc/anacrontab file. The contents of these files define cron jobs that are to be run at various intervals. The individual user cron files are located in /var/spool/cron, and system services and applications generally add cron job files in the /etc/cron.d directory.
+
+How to use cron:
+https://opensource.com/article/17/11/how-use-cron-linux
+
+Scheduling in cron and characters allowed: 
+https://www.easycron.com/faq/What-cron-expression-does-easycron-support

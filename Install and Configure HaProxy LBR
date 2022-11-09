@@ -1,0 +1,67 @@
+There is a static website of Nautilus project running in Stratos Datacenter. Based on the infrastructure they have already configured app servers and code is already deployed over there. To make it work properly they need to configure LBR server. There are number of options for that but team has decided to go with HAproxy.
+
+
+a. So install and configure HAproxy on LBR server using yum only and make sure all app servers are added to HAproxy load balancer. HAproxy must serve on default http port (Note: Please do not remove stats socket /var/lib/haproxy/stats entry from haproxy default config.).
+
+b. You can access the website on LBR link, to do so click on the + button on top of your terminal and select option Select port to view on Host 1 and after adding port 80 click on Display Port.
+
+Solution:
+
+ssh loki@172.16.238.14
+
+Install:
+
+sudo yum -y install haproxy
+
+After installation, verify that HAProxy is working:
+
+haproxy -v
+
+To Edit the configuration file:
+
+sudo vi /etc/haproxy/haproxy.cfg
+
+To Verify if a HAproxy File is valid or not use the below command:
+
+haproxy -f /etc/haproxy/haproxy.cfg -c
+
+TO retsart the HAproxy service:
+
+sudo service haproxy restart
+
+To Check which ports the servers are listening login to app servers and run the following command:
+
+netstat -a
+
+cat /etc/httpd/conf/httpd.conf | grep listen
+
+global 
+    log 127.0.0.1 local0 notice 
+    maxconn 2000 
+    stats socket /var/lib/haproxy/stats
+    user haproxy 
+    group haproxy 
+defaults 
+    log     global 
+    mode    http 
+    option  httplog 
+    option  dontlognull 
+    retries 3 
+    option redispatch 
+    timeout connect  5000 
+    timeout client  10000 
+    timeout server  10000 
+listen appname 0.0.0.0:80 
+    mode http 
+    stats enable 
+    stats uri /haproxy?stats 
+    stats realm Strictly\ Private 
+    stats auth A_Username:YourPassword 
+    stats auth Another_User:passwd 
+    balance roundrobin 
+    option httpclose 
+    option forwardfor 
+    server stapp01 172.16.238.10:5002 check 
+    server stapp02 172.16.238.11:6000 check 
+    server stapp03 172.16.238.12:6000 check
+

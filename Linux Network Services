@@ -1,0 +1,40 @@
+Our monitoring tool has reported an issue in Stratos Datacenter. One of our app servers has an issue, as its Apache service is not reachable on port 8086 (which is our Apache port). The service itself could be down, the firewall could be at fault, or something else could be causing the issue.
+
+
+Use tools like telnet, netstat, etc. to find and fix the issue. Also make sure Apache is reachable from the jump host without compromising any security settings.
+
+Getting Services running for http and port
+
+netstat -lnp | grep :8086
+ps -ef | grep -i http
+netstat -an | grep 8086
+ps -ef | grep -i 8086
+
+Note****: losf -i :<portnumber> to get the exact PID which is using the port
+
+sudo iptables -L -v -n
+sudo iptables -A INPUT -p tcp --dport 5001 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+sudo iptables -I INPUT -p tcp --dport 5001 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT(enter the rule at the top)
+sudo service iptables save
+sudo iptables -L -v -n
+sudo systemctl restart iptables
+iptables - INPUT -p tcp --dport 8080 -j ACCEPT
+
+****NOTE***: If the reject rule is above the accept rule it the reject rule will be applies as the IPtables read the rules from top to bottom.
+
+
+sudo  systemctl start -l httpd
+systemctl status -l httpd.service
+systemctl status -l httpd
+sudo  systemctl start httpd
+sudo journalctl -u httpd.service
+
+
+   
+httpd[471]: AH00558: httpd: Could not reliably determine the ser
+ver's fully qualified domain name, using 172.16.238.10. Set the 'ServerName' directive g
+lobally to suppress this message
+httpd[471]: (98)Address already in use: AH00072: make_sock: coul
+d not bind to address 0.0.0.0:8086
+
+This error is caused as another service is using the same port as httpd, kill the service and it should work fine

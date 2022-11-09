@@ -1,0 +1,32 @@
+We have a backup management application UI hosted on Nautilus's backup server in Stratos DC. That backup management application code is deployed under Apache on the backup server itself, and Nginx is running as a reverse proxy on the same server. Apache and Nginx ports are 3003 and 8098, respectively. We have iptables firewall installed on this server. Make the appropriate changes to fulfill the requirements mentioned below:
+
+
+We want to open all incoming connections to Nginx's port and block all incoming connections to Apache's port. Also make sure rules are permanent.
+
+Solution: 
+
+check your existing rules:
+
+sudo iptables -t <table> -L -n -v
+*For specific tables for all you can ignore -t and table name
+
+
+To save the iptables configuration use:
+
+sudo iptables-save(this did not work)
+
+service iptables save (to save the current iptables rules, the rules will be saved in /etc/sysconfig/iptables)(this works)
+
+service iptables restart (optional, if needed to reload)
+
+#iptables -L INPUT -nv --list-numbers [To see existing iptables in order]
+
+Rules: 
+
+sudo iptables -A INPUT -p tcp --dport 8098 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+
+sudo iptables -A INPUT -p tcp --dport 3003 -m conntrack --ctstate NEW -j REJECT
+
+sudo iptables -A INPUT -p tcp --dport 8086 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+References: 
+https://www.geeksforgeeks.org/iptables-command-in-linux-with-examples/#:~:text=iptables%20is%20a%20command%20line,for%20a%20set%20of%20chains.

@@ -1,0 +1,23 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Helpful commands:
+
+sudo sysctl -a | grep net.ipv4.ip_forward
+
+to make it permanent. Add in
+/etc/sysctl.conf :-
+net.ipv4.ip_forward = 0

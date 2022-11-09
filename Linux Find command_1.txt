@@ -1,0 +1,10 @@
+On Nautilus App Server 3 an issue was observed by security team. They found some malicious content within website code. After digging into the issue they found that there might be more infected files. Before doing a cleanup they would like to find out all similar files and copy them to a safe location for further investigation. Accomplish the task as per below mentioned requirements:
+
+
+a. On App Server 3 at location /var/www/html/blog find out all files (not directories) having .css extension.
+
+b. Copy all those files along with their parent directory structure to location /blog on same server.
+
+c. Please make sure not to copy entire /var/www/html/blog directory content.
+
+find . -name '*.css' -exec cp --parents \{\} /blog \;

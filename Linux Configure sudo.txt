@@ -1,0 +1,11 @@
+Task Details
+We have some users on all app servers in Stratos Datacenter. Some of them have been assigned some new roles and responsibilities, therefore their users need to be upgraded with sudo access so that they can perform admin level tasks.
+
+
+a. Provide sudo access to user jim on all app servers.
+
+b. Make sure you have set up password-less sudo for the user.
+
+to provide sudo access you will have to add the user 'jim' to /etc / sudoers file or by adding him to the sudo group. In centos the sudo group is called ' Wheel'. So you will need to run usermod -aG wheel jim and then for point b. Normally when you execute a sudo command for the first time, it will ask the user to enter his password to complete the execution. By default, the sudo password will be cached in the next 5 minutes. If any execution happens within the next 5 minutes, it won't require the password, but after the cached period again you will need to enter the password. However, this can be overridden and disable the password authentication option by using NOPASSWD in the sudoers file. jim ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart network,/usr/bin/systemctl status network Click on ✔ and give it another try.
+
+https://www.linuxteck.com/steps-to-configure-sudo-in-linux/

@@ -1,0 +1,36 @@
+TASK: 
+
+On Nautilus App Server 3 an issue was observed by security team. They found some malicious content within website code. After digging into the issue they found that there might be more infected files. Before doing a cleanup they would like to find out all similar files and copy them to a safe location for further investigation. Accomplish the task as per below mentioned requirements:
+
+
+a. On App Server 3 at location /var/www/html/beta find out all files (not directories) having .js extension.
+
+b. Copy all those files along with their parent directory structure to location /beta on same server.
+
+c. Please make sure not to copy entire /var/www/html/beta directory content.
+
+
+Solution: 
+
+ssh into stapp03
+
+ssh banner@172.16.238.12
+
+cd /var/www/html/beta
+
+find . -name '*.js' -exec cp --parents \{\} /beta \;
+
+However, due to security issues the above should not be used in hard coding. 
+
+Rather you can user this:
+
+You can use find and cpio in pass through mode
+
+find . -name '*.csv' | cpio -pdm  /target
+
+This will find all .csv files in the current directory and below and copy them to /target maintaining the directory structure rooted in '.'
+
+If you use
+
+find /path/to/files -name '*.csv' | cpio -pdm /target
+it will find all of the file in /path/to/files and below and copy them to /target/path/to/files and below.

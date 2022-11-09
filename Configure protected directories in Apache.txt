@@ -1,0 +1,48 @@
+Task:
+
+xFusionCorp Industries has hosted some static websites on Nautilus Application Servers in Stratos DC. There are some confidential directories on document root that need to be password protected. Since they are using Apache for hosting the websites so production support team has decided to use .htaccess with basic auth. There is a website needs to be uploaded to /var/www/html/finance on Nautilus App Server 3. But before that we need to setup the authentication.
+
+
+Create /var/www/html/finance direcotry if doesn't exist.
+
+Add an user ammar in htpasswd and set its password to YchZHRcLkL.
+
+There is a file /tmp/index.html placed on Jump Server. Copy the same to new directory you created, please make sure default document root should remain /var/www/html.
+s
+
+Solution:
+
+create directory
+
+Adding user:
+htpasswd -c /etc/httpd/.htpasswd
+
+Create basic .htaccess file
+
+cat /var/www/html/itadmin/.htaccess <----------- itadmin is the new directory created
+
+AuthType Basic
+AuthName “Restricted Content”
+AuthUserFile /etc/httpd/.htpasswd
+Require valid-user
+
+Update the httpd configuration file with this entry
+cat /etc/httpd/conf/httpd.conf
+
+<Directory “/var/www/html/itadmin”> <--------- itadmin is the new directory name
+
+AllowOverride AuthConfig
+
+Scp /tmp/index.html file from jumpbox to app server (/var/www/html/itadmin/index.html).
+
+Restart httpd service
+
+Test connectivity
+curl -u yousuf:GyQkFRVNr3 http://stapp01:8080/itadmin/
+
+
+Commands:
+
+# yum install httpd -y
+
+# sudo scp -r /tmp/index.html banner@172.16.238.12:/tmp 

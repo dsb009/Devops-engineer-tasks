@@ -1,0 +1,47 @@
+The Nautilus application development team recently finished the beta version of one of their Java-based applications, which they are planning to deploy on one of the app servers in Stratos DC. After an internal team meeting, they have decided to use the tomcat application server. Based on the requirements mentioned below complete the task:
+
+
+a. Install tomcat server on App Server 1 using yum.
+
+b. Configure it to run on port 3000.
+
+c. There is a ROOT.war file on Jump host at location /tmp. Deploy it on this tomcat server and make sure the webpage works directly on base URL i.e without specifying any sub-directory anything like this http://URL/ROOT .
+
+d. You can access the website on LBR link. To do so click on the + button on top of your terminal, select option Select port to view on Host 1, and after adding port 80 click on Display Port.
+
+Solution: 
+
+Copy war file from jump host to desired server mentioned in the question
+
+scp /tmp/ROOT.war tony@stapp01:/tmp
+
+Login to mentioned server as a root
+
+ssh tony@stapp01
+
+sudo su
+
+Install tomcat server
+
+sudo yum install tomcat
+
+Then copy war file to tomcat server
+
+cp /tmp/ROOT.war /usr/share/tomcat/webapps
+
+Open the config file of tomcat server and replace the port by mentioned port
+
+vi /usr/share/tomcat/conf/server.xml
+
+ <Connector port="6400" protocol="HTTP/1.1"
+
+               connectionTimeout="20000"
+
+               redirectPort="8443" />
+Save it and restart server
+
+sudo systemctl start tomcat
+
+sudo systemctl status tomcat
+
+sudo systemctl enable tomcat

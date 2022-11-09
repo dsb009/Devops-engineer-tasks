@@ -1,0 +1,4 @@
+A developer Ravi has been assigned Nautilus project temporarily as a backup resource. Being a temporary resource for this project we need a temporary user for Ravi. Its a good idea to create a user with some auto expiry date so that user won't be able to access servers once expired.
+
+
+So create a user named ravi on the App server 1. Set expiry date to 2021-01-28 in Stratos Datacenter. Make sure the user is created as per standard and is in lowercase

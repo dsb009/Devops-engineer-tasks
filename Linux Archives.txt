@@ -1,0 +1,18 @@
+On Nautilus storage server in Stratos DC there is a storage location /data which is used by different developers to keep their data (no confidential data). One of the developers anita has raised a ticket and asked for a copy of his/her data present in /data/anita directory on storage server. /home is an FTP location on storage server where developers can download their data. Below are the instructions shared by the system admin team to accomplish the task:
+
+
+a. Make a anita.tar.gz compressed archive of /data/anita directory and move the archive to /home directory on Storage Server.
+
+Refer: https://www.tecmint.com/18-tar-command-examples-in-linux/
+
+Tar Usage and Options
+c – create a archive file.
+x – extract a archive file.
+v – show the progress of archive file.
+f – filename of archive file.
+t – viewing content of archive file.
+j – filter archive through bzip2.
+z – filter archive through gzip.
+r – append or update files or directories to existing archive file.
+W – Verify a archive file.
+wildcards – Specify patterns in unix tar command.

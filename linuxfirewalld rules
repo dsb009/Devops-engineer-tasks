@@ -1,0 +1,21 @@
+
+
+Nautilus system admins team just deployed a web UI application for their backup utility running on Nautilus backup server in Stratos Datacenter. The application is running on port 5000 . They have firewalld installed on that server. Some requirements have came up as mentioned below:
+
+
+Open all incoming connection on 5000/tcp port. Zone should be public.
+
+sudo firewall-cmd --permanent --zone=public --add-port=8087/tcp
+sudo firewall-cmd --reload
+sudo systemctl restart firewalld
+sudo firewall-cmd --zone=public --list-all
+
+Nautilus system admins team just deployed a web UI application for their backup utility running on Nautilus backup server in Stratos Datacenter. The application is running on port 3001 . They have firewalld installed on that server. Some requirements have came up as mentioned below:
+
+
+Open all incoming connection on 3001/tcp port. Zone should be public
+
+sudo firewall-cmd --permanent --zone=public --add-port=3001/tcp
+sudo firewall-cmd --reload
+sudo systemctl restart firewalld
+sudo firewall-cmd --zone=public --list-all

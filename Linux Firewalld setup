@@ -1,0 +1,59 @@
+find out which port is apache runing on by using ss -ntlpu and checking the .conf file if that’s the port its listening on.
+
+cat /etc/httpd/conf/httpd.conf |grep Listen
+
+
+
+
+To secure our Nautilus infrastructure in Stratos Datacenter we have decided to install and configure firewalld on all app servers. We have Apache and Nginx services running on these apps. Nginx is running as a reverse proxy server for Apache. We might have more robust firewall settings in future but for now we have decided to go with below given requirements:
+
+
+A. ALLOW ALL INCOMING CONNECTIONS ON NGINX PORT.
+
+1. First check which port Ngnix is running using 
+    vi /etc/nginx/nginx.conf  (It will be marked as listen 3200 default_server;)
+2. restart Nginx HTTP server to apply changes.
+
+# systemctl restart nginx.service 
+# systemctl status ngnix
+3. firewall-cmd --permanent --add-port=  <Portnumber>/<tcp/udp>	
+
+
+b. ALLOW INCOMING CONNECTIONS FROM LB HOST ONLY ON APACHE PORT AND BLOCK FOR REST.
+It needs to be done using rich rule.
+
+
+1. first find out which port is apache runing on by using # ss -ntlpu and checking the .conf file if that’s the port its listening on.
+
+# systemctl status httpd
+c. ALL RULES MUST BE PERMANENT.
+
+d. ZONE SHOULD BE PUBLIC.
+
+e. IF APACHE OR NGINX SERVICES AREN'T RUNNING ALREADY PLEASE MAKE SURE TO START THEM.
+
+
+Set of Commands that need to be followed:
+
+sudo systemctl restart dbus;sudo systemctl restart firewalld;sudo systemctl status firewalld
+
+sudo firewall-cmd --state
+
+# sudo systemctl restart nginx.service 
+# sudo systemctl status ngnix
+
+systemctl status httpd
+
+modprobe iptable_filter
+
+#sudo systemctl restart firewalld;systemctl status firewall
+## Find Ngnix Port
+
+# cat /etc/nginx/nginx.conf 
+## app01 app02 and app03=8098
+# firewall-cmd --zone=public --permanent --add-port=8098/tcp;firewall-cmd --zone=public --permanent --add-service=https;firewall-cmd --zone=public --permanent --add-service=http
+
+# cat /etc/httpd/conf/httpd.conf |grep Listen
+sudo firewall-cmd --permanent --zone=public --add-rich-rule='rule family=ipv4 source address=172.16.238.14 port protocol=tcp port=5000 accept'
+
+sudo firewall-cmd --reload;sudo firewall-cmd --list-all

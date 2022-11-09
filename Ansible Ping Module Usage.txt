@@ -1,0 +1,14 @@
+For Windows targets, use the win_ping module instead.
+For Network targets, use the net_ping module instead.
+
+# Ad Hoc command:
+
+ansible all -m ping
+
+#in Playbook
+- 
+  name: ping
+  hosts: all
+  tasks: 
+   - ping:
+      data: crash ( to invoke exception)

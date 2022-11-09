@@ -1,0 +1,80 @@
+
+Some of the developers from Nautilus project team have asked for SFTP access to at least one of the app server in Stratos DC. After going through the requirements, the system admins team has decided to configure the SFTP server on App Server 2 server in Stratos Datacenter. Please configure it as per the following instructions:
+
+
+a. Create an SFTP user ravi and set its password to ksH85UJjhb.
+
+b. Password authentication should be enabled for this user.
+
+c. Set its ChrootDirectory to /var/www/nfsdata.
+
+d. SFTP user should only be allowed to make SFTP connections.
+
+
+
+
+Step 1: Add user without login shell: 
+
+sudo adduser --shell /bin/false
+
+step 2: set password: 
+
+sudo passwd sftpuser
+
+Step 3: Create a directory: 
+
+sudo mkdir -p /var/sftp/files
+
+step 5: Change ownership:
+
+sudo chown sftpuser:sftpuser /var/sftp/files
+
+step 6: And set the owner and group owner of the /var/sftp to root.
+
+sudo chown root:root /var/sftp
+sudo chmod 755 /var/sftp
+
+Step 7 – Configure SSH for SFTP
+
+sudo vim /etc/ssh/sshd_config
+
+Match User ravi
+	ForceCommand internal-sftp
+	PasswordAuthentication yes
+	ChrootDirectory /var/www/nfsdata
+	PermitTunnel no
+	AllowAgentForwarding no
+	AllowTcpForwarding no
+	X11Forwarding no
+	
+Step 8: Save the configuration and restart SSH service to apply changes.
+
+sudo systemctl restart sshd.service
+
+step 9: test the connection 
+
+sftp sftpuser@ipaddress
+
+**********************IMPORTANT***********************
+
+Now of you get the following error message: 
+
+packet_write_wait: Connection to 172.16.238.11 port 22: Broken pipe Couldn't read packet: Connection reset by peer
+
+You get this because the home directory for the user or the ChrootDirectory or chain of folders leading down to it must be owned by root.
+
+
+Permissions requirements:
+
+Note that the owner of the destination directory must be "root", and group/other users cannot have write permissions. The same with all the directory path:
+Code:
+chown root /path/to/destination
+chown root /path/to
+chown root /path
+
+chmod g-w,o-w /path/to/destination
+chmod g-w,o-w /path/to
+chmod g-w,o-w /path 
+
+
+

@@ -1,0 +1,154 @@
+Task Details
+The Nautilus DevOps team is ready to launch a new application, which they will deploy on app servers in Stratos Datacenter. They are expecting significant traffic/usage of squid on app servers after that. This will generate massive logs, creating huge log files. To utilise the storage efficiently, they need to compress the log files and retain them for a maximum of 3 weeks. Check the requirements shared below:
+
+
+a. In all app servers install squid package.
+
+b. Using logrotate configure squid logs rotation to monthly and keep only 3 rotated.
+
+(If by default log rotation is set, then please update configuration as needed)
+
+
+ssh connect to app server1
+---------------------------
+
+ssh tony@stapp01
+
+
+switch to root user
+--------------------
+
+sudo -i
+
+install squid
+--------------
+
+yum install epel-release  -y
+
+yum install squid  -y
+
+configure  logrotate for squid
+-------------------------------
+
+cd etc/logrotate.d
+
+
+edit file squid
+-----------------
+
+vi squid       ##  change weekly  to  monthly  and let rotate 3  unchanged
+
+varlogsquid.log {
+    weekly      ##  change weekly  to  monthly
+    rotate 3
+    compress
+    notifempty
+    missingok
+    nocreate
+    sharedscripts
+    postrotate
+      # Asks squid to reopen its logs. (logfile_rotate 0 is set in squid.conf)
+      # errors redirected to make it silent if squid is not running
+      usrsbinsquid -k rotate 2devnull
+      # Wait a little to allow Squid to catch up before the logs is compressed
+      sleep 1
+    endscript
+}
+
+save &  exit
+
+ssh connect to app server2
+---------------------------
+
+ssh steve@stapp02
+
+
+switch to root user
+--------------------
+
+sudo -i
+
+install squid
+--------------
+
+yum install epel-release  -y
+
+yum install squid  -y
+
+configure  logrotate for squid
+-------------------------------
+
+cd etclogrotate.d
+
+
+edit file squid
+-----------------
+
+vi squid       ##  change weekly  to  monthly  and let rotate 3  unchanged
+
+varlogsquid.log {
+    weekly      ##  change weekly  to  monthly
+    rotate 3
+    compress
+    notifempty
+    missingok
+    nocreate
+    sharedscripts
+    postrotate
+      # Asks squid to reopen its logs. (logfile_rotate 0 is set in squid.conf)
+      # errors redirected to make it silent if squid is not running
+      usrsbinsquid -k rotate 2devnull
+      # Wait a little to allow Squid to catch up before the logs is compressed
+      sleep 1
+    endscript
+}
+
+save &  exit
+
+ssh connect to app server3
+---------------------------
+
+ssh banner@stapp03
+
+
+switch to root user
+--------------------
+
+sudo -i
+
+install squid
+--------------
+
+yum install epel-release  -y
+
+yum install squid  -y
+
+configure  logrotate for squid
+-------------------------------
+
+cd etclogrotate.d
+
+
+edit file squid
+-----------------
+
+vi squid       ##  change weekly  to  monthly  and let rotate 3  unchanged
+
+varlogsquid.log {
+    weekly      ##  change weekly  to  monthly
+    rotate 3
+    compress
+    notifempty
+    missingok
+    nocreate
+    sharedscripts
+    postrotate
+      # Asks squid to reopen its logs. (logfile_rotate 0 is set in squid.conf)
+      # errors redirected to make it silent if squid is not running
+      usrsbinsquid -k rotate 2devnull
+      # Wait a little to allow Squid to catch up before the logs is compressed
+      sleep 1
+    endscript
+}
+
+save &  exit

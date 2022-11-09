@@ -1,0 +1,33 @@
+The production support team of xFusionCorp Industries has deployed some of the latest monitoring tools to keep an eye on every service, application, etc. running on the systems. One of the monitoring systems reported about Apache service unavailability on one of the app servers in Stratos DC.
+
+
+Identify the faulty app host and fix the issue. Make sure Apache service is up and running on all app hosts. Also, do not try to change the Apache port on any host.
+
+
+sudo journalctl -u httpd.service
+
+httpd[471]: AH00558: httpd: Could not reliably determine the ser
+ver's fully qualified domain name, using 172.16.238.10. Set the 'ServerName' directive g
+lobally to suppress this message
+httpd[471]: (98)Address already in use: AH00072: make_sock: coul
+d not bind to address 0.0.0.0:8086
+
+This error is caused as another service is using the same port as httpd, kill the service and it should work fine.
+
+How to check which port is configured in http:
+
+/etc/apache2/httpd.conf
+/etc/apache2/apache2.conf
+/etc/httpd/httpd.conf
+/etc/httpd/conf/httpd.conf
+
+Cat <one of the above location> | grep -i listen
+
+Inorder to check which service is using port 5003
+
+sudo netstat -tulpn | grep 5003
+
+l – tells netstat to only show listening sockets.
+t – tells it to display tcp connections.
+n – instructs it show numerical addresses.
+p – enables showing of the process ID and the process name.

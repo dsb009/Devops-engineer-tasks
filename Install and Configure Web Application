@@ -1,0 +1,55 @@
+xFusionCorp Industries is planning to host two static websites on their infra in Stratos Datacenter. The development of these websites is still in -progress, but we want to get the servers ready. The storage server has a shared directory /data that is mounted on each app host under /var/www/html directory. Please perform the following steps to accomplish the task:
+
+
+a. Install httpd package and dependencies on all app hosts.
+
+b. Apache should serve on port 8080 within the apps.
+
+c. There are two website's backups /home/thor/official and /home/thor/games on jump_host. Set them up on Apache in a way that official should work on link http://<<lb-url>>/official/ and games should work on link http://<<lb-url>>/games. (do not worry about load balancer configuration, as its already configured).
+
+d. You can access the website on LBR link; to do so click on the + button on top of your terminal, select the option Select port to view on Host 1, and after adding port 80 click on Display Port.
+
+
+
+
+On all App server,
+
+sudo yum install httpd -y
+
+sudo yum install openssh-clients -y
+
+sudo systemctl restart sshd
+
+From JumpHost,
+
+scp -r /home/thor/official tony@stapp01:/tmp
+scp -r /home/thor/games tony@stapp01:/tmp
+
+scp -r /home/thor/official steve@stapp02:/tmp
+scp -r /home/thor/games steve@stapp02:/tmp
+
+scp -r /home/thor/official banner@stapp03:/tmp
+scp -r /home/thor/games banner@stapp03:/tmp
+
+from any one of appserver move the folder on the correct location
+
+mv /tmp/official /var/www/html
+mv /tmp/games /var/www/html
+	
+Again from all APP server,
+
+change the Listen 8080 at vi /etc/httpd/conf/httpd.conf
+
+systemctl start httpd
+systemctl enable httpd
+
+Validate the solution from Jumphost,
+
+curl http://stapp01:8080/games 3
+curl http://stapp01:8080/official
+
+curl http://stapp02:8080/games
+curl http://stapp02:8080/official
+
+curl http://stapp03:8080/games
+curl http://stapp03:8080/official
