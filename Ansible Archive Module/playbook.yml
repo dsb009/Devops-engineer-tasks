@@ -1,0 +1,14 @@
+---
+
+- name: create archives
+  hosts: stapp01,stapp02,stapp03
+  become: yes
+  tasks:
+    - name: create the archive file and set respective owner
+      archive: 
+        path: /usr/src/devops/
+        dest: /opt/devops/blog.tar.gz
+        format: gz
+        force_archive: true
+        owner: "{{ansible_user}}"
+        group: "{{ansible_user}}"
