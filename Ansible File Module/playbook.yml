@@ -1,0 +1,14 @@
+---
+
+- name: create text file 
+  hosts: stapp01,stapp02,stapp03
+  become: yes
+  tasks:
+    - name: create a text file and set permissions
+      file:
+        path:  /home/web.txt
+        owner: "{{ansible_user}}"
+        group: "{{ansible_user}}"
+        mode: 0755
+        state: touch
+
